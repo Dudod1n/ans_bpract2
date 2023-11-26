@@ -1,0 +1,23 @@
+---
+- name: Создание пользователя
+  ansible.builtin.user:
+    name: "{{ users_remote_user_name }}"
+    state: present
+
+- name: Создание директории .ssh
+  ansible.builtin.file:
+    path: /home/{{ users_remote_user_name }}/.ssh
+    state: directory
+    mode: "0600"
+
+- name: Создание файла ключа SSH
+  ansible.builtin.file:
+    path: /home/{{ users_remote_user_name }}/.ssh/id_rsa.pub
+    state: touch
+    mode: "0600"
+
+- name: Запись ключа в файл
+  ansible.builtin.copy:
+    content: "{{ users_ssh_key }}"
+    dest: /home/{{ users_remote_user_name }}/.ssh/id_rsa.pub
+    mode: "0600"

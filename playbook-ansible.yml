@@ -1,0 +1,5 @@
+- name: Set ansible role to server
+  hosts: ans
+  become: true
+  roles:
+    - ansible
