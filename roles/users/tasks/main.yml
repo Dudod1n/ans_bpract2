@@ -1,23 +1,36 @@
 ---
+- name: Создание группы superusers
+  ansible.builtin.group:
+    name: superusers
+    state: present
+
+- name: Добавление sudo для superusers
+  ansible.builtin.lineinfile:
+    dest: /etc/sudoers
+    line: "%superusers ALL=(ALL) NOPASSWD: ALL"
+    validate: 'visudo -cf %s'
+
 - name: Создание пользователя
   ansible.builtin.user:
     name: "{{ users_remote_user_name }}"
+    shell: /bin/bash
+    append: true
+    groups: "{{ users_remote_user_name }},superusers"
     state: present
+    generate_ssh_key: true
 
 - name: Создание директории .ssh
   ansible.builtin.file:
     path: /home/{{ users_remote_user_name }}/.ssh
     state: directory
-    mode: "0600"
-
-- name: Создание файла ключа SSH
-  ansible.builtin.file:
-    path: /home/{{ users_remote_user_name }}/.ssh/id_rsa.pub
-    state: touch
-    mode: "0600"
+    mode: "0700"
+    owner: "{{ users_remote_user_name }}"
+    group: "{{ users_remote_user_name }}"
 
 - name: Запись ключа в файл
   ansible.builtin.copy:
     content: "{{ users_ssh_key }}"
-    dest: /home/{{ users_remote_user_name }}/.ssh/id_rsa.pub
+    dest: /home/{{ users_remote_user_name }}/.ssh/authorized_keys
     mode: "0600"
+    owner: "{{ users_remote_user_name }}"
+    group: "{{ users_remote_user_name }}"
