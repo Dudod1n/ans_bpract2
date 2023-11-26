@@ -15,7 +15,7 @@
     name: "{{ users_remote_user_name }}"
     shell: /bin/bash
     append: true
-    groups: "{{ users_remote_user_name }},superusers"
+    groups: superusers
     state: present
     generate_ssh_key: true
 
