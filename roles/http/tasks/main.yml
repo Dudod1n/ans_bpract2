@@ -1,2 +1,35 @@
 ---
-# tasks file for http
+- name: Установка Nginx
+  ansible.builtin.apt:
+    name: nginx=1.18.0
+    state: present
+    update_cache: true
+
+- name: Запуск nginx сервиса
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
+
+- name: Создание DocumentRoot директории.
+  ansible.builtin.file:
+    path: "{{ nginx_document_root }}"
+    state: directory
+    mode: "755"
+    owner: "{{ exec_user }}"
+
+- name: Изменение nginx.conf по шаблону.
+  ansible.builtin.template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+    mode: preserve
+  notify:
+    - Перезагрузка Nginx
+
+- name: Копирование index.php файла.
+  ansible.builtin.copy:
+    src: index.php
+    dest: "{{ nginx_document_root }}/index.php"
+    mode: preserve
+  notify:
+    - Перезагрузка Nginx

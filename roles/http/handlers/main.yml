@@ -1,2 +1,5 @@
 ---
-# handlers file for http
+- name: Перезагрузка Nginx
+  ansible.builtin.service:
+    name: nginx
+    state: reloaded

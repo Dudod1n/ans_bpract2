@@ -1,2 +1,4 @@
 ---
-# vars file for http
+exec_user: papa
+nginx_document_root: /var/www/my-site
+# vars file for nginx_php
