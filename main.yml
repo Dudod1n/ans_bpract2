@@ -6,7 +6,7 @@
     - users
     - http
 
-- name: Role1
+- name: Role2
   hosts: php1
   become: true
   roles:
