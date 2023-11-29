@@ -5,12 +5,6 @@
     state: present
     update_cache: true
 
-- name: Запуск nginx сервиса
-  ansible.builtin.service:
-    name: nginx
-    state: started
-    enabled: true
-
 - name: Создание DocumentRoot директории.
   ansible.builtin.file:
     path: "{{ nginx_document_root }}"
@@ -25,6 +19,8 @@
     mode: preserve
   notify:
     - Перезагрузка Nginx
+  tags:
+    - config
 
 - name: Изменение default.conf по шаблону.
   ansible.builtin.template:
@@ -33,11 +29,23 @@
     mode: preserve
   notify:
     - Перезагрузка Nginx
+  tags:
+    - config
 
 - name: Копирование index.php файла.
   ansible.builtin.copy:
     src: index.php
     dest: "{{ nginx_document_root }}/index.php"
-    mode: preserve
+    mode: "777"
+    owner: "{{ exec_user }}"
+    group: "{{ exec_user }}"
   notify:
     - Перезагрузка Nginx
+  tags:
+    - config
+
+- name: Запуск nginx сервиса
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true

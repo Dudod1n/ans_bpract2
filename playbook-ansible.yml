@@ -1,8 +1,0 @@
----
-- name: Set ansible role to server
-  hosts: ans
-  become: true
-  roles:
-    - users
-    - http
-    - php

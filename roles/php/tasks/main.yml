@@ -5,15 +5,41 @@
     state: present
     update_cache: true
 
-- name: Проверка запуска php-fpm сервиса.
-  ansible.builtin.service:
-    name: php8.1-fpm
-    state: started
-    enabled: true
-
 - name: Настройка www-conf
   ansible.builtin.template:
     src: www-conf.j2
     dest: /etc/php/8.1/fpm/pool.d/www.conf
     mode: "644"
     owner: root
+  notify:
+    - Перезагрузка php-fpm
+  tags:
+    - config
+
+- name: Создание DocumentRoot директории.
+  ansible.builtin.file:
+    path: "{{ nginx_document_root }}"
+    state: directory
+    mode: "755"
+    owner: "{{ exec_user }}"
+    group: "{{ exec_user }}"
+  tags:
+    - config
+
+- name: Копирование index.php файла.
+  ansible.builtin.copy:
+    src: index.php
+    dest: "{{ nginx_document_root }}/index.php"
+    mode: "755"
+    owner: "{{ exec_user }}"
+    group: "{{ exec_user }}"
+  notify:
+    - Перезагрузка php-fpm
+  tags:
+    - config
+
+- name: Проверка запуска php-fpm сервиса.
+  ansible.builtin.service:
+    name: php8.1-fpm
+    state: started
+    enabled: true
