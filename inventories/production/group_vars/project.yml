@@ -1,0 +1,5 @@
+---
+ansible_user: dudu
+ansible_ssh_private_key_file: /home/dudod1n/.ssh/dudu_key
+exec_user: papa
+nginx_document_root: /var/www/my-site

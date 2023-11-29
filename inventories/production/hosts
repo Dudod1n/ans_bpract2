@@ -1,0 +1,10 @@
+[web_nginx]
+web1 ansible_host=84.252.131.188
+
+
+[web_php]
+php1 ansible_host=62.84.124.14
+
+[project:children]
+web_nginx
+web_php

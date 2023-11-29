@@ -1,0 +1,14 @@
+---
+- name: Role1
+  hosts: web1
+  become: true
+  roles:
+    - users
+    - http
+
+- name: Role1
+  hosts: php1
+  become: true
+  roles:
+    - users
+    - php
